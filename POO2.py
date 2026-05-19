@@ -53,12 +53,24 @@ class Entidad:
 
 # habia pensado que estas funciones podrian recibir el resumen, es decir la clase formate_datos para que de ahi saquen todos los datos que enecesitan
 
-class Notificacion():
-    pass # falta
+class Notificacion(ABC):
+    @abstractmethod
+    def enviar(self, resumen):
+        pass
+
+class notificacionEmail(Notificacion):
+    def enviar(self, resumen):
+        return f"[EMAIL] Confirmacion enviada a {resumen['nombre']} por ${resumen['total']:.2f}"
 
 # Clase Repositorio
-class Repositorio():
-    pass # falta
+class Repositorio(ABC):
+    @abstractmethod
+    def guardar(self, resumen):
+        pass
+
+class registroDB(Repositorio):
+    def guardar(self, resumen):
+        return f"[DB] {resumen['nombre']} | {resumen['tipo']} x{resumen['cantidad']} = ${resumen['total']:.2f}"
 
 #--------------------------------------------------
 # Pagos
@@ -82,8 +94,14 @@ class pagoTarjeta(pagable):
 class CalcularTotal():
     def calcular_total(self, boleto, cantidad):
         return boleto.calcular_precio() * cantidad
+    
+class Formateable(ABC):
+    
+    @abstractmethod
+    def formateo_datos(self, boleto, cantidad, comprador, metodo_pago):
+        pass
          
-class Datos():
+class Datos(Formateable):
     def __init__(self, calculadora):
         self.calculadora = calculadora
         
@@ -93,6 +111,7 @@ class Datos():
         
         return {
             "pelicula": boleto.pelicula,
+            "tipo": boleto.tipo(),
             "cantidad": cantidad,
             "nombre": comprador.nombre,
             "total": precio,
@@ -102,9 +121,24 @@ class Datos():
 #--------------------------------------------------
 ## Funcion impresora de resultado
 
-class TicketCheckout():
-    def imprimir_datos(self):
-        pass # falta
+class Imprimible(ABC):
+    
+    @abstractmethod
+    def imprimir_datos(self, resumen):
+        pass
+
+class TicketCheckout(Imprimible):
+    def __init__(self, repositorio, notificacion):
+        self.repositorio = repositorio
+        self.notificacion = notificacion
+
+    def imprimir_datos(self, resumen):
+        print(f"{resumen['tipo']} x{resumen['cantidad']} -- {resumen['nombre']}")
+        print(resumen['pago_info'])
+        print(self.repositorio.guardar(resumen))
+        print(self.notificacion.enviar(resumen))
+        print(f"Total: ${resumen['total']:.2f}")
+        print()
 
 #--------------------------------------------------
 # pruebas
