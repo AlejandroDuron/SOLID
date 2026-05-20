@@ -59,14 +59,6 @@ class PersonaNatural(Entidad):
     def tipo(self):
         return "Persona Natural"
 
-class Negocio(Entidad):
-    def __init__(self, nombre, credito_físcal):
-        super().__init__(nombre)
-        self.credito_físcal = credito_físcal
-
-    def tipo(self):
-        return "Persona Jurídica"
-
 #--------------------------------------------------
 # Notidiaciones
 
