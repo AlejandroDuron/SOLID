@@ -94,7 +94,8 @@ class pagoTarjeta(pagable):
 # Formateo de datos
     
 class CalcularTotal():
-    def calcular_total(self, boleto, cantidad):
+    @staticmethod
+    def calcular_total(boleto, cantidad):
         return boleto.calcular_precio() * cantidad
     
 class Formateable(ABC):
