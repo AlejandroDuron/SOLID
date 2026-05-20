@@ -44,10 +44,29 @@ class BoletoEstudiante(Boleto):
 #--------------------------------------------------
 # Clase para entidad
 
-class Entidad:
+class Entidad(ABC):
     def __init__(self, nombre):
         self.nombre = nombre
+    
+    @abstractmethod
+    def tipo(self):
+        pass
+
+class PersonaNatural(Entidad):
+    def __init__(self, nombre):
+        super().__init__(nombre)
         
+    def tipo(self):
+        return "Persona Natural"
+
+class Negocio(Entidad):
+    def __init__(self, nombre, credito_físcal):
+        super().__init__(nombre)
+        self.credito_físcal = credito_físcal
+
+    def tipo(self):
+        return "Persona Jurídica"
+
 #--------------------------------------------------
 # Notidiaciones
 
@@ -151,14 +170,14 @@ ticket      = TicketCheckout(db, email)
 
 # Ana Garcia
 boleto1    = BoletoVIP("Inception")
-comprador1 = Entidad("Ana Garcia")
+comprador1 = PersonaNatural("Ana Garcia")
 metodo1    = pagoTarjeta()
 resumen1   = datos.formateo_datos(boleto1, 2, comprador1, metodo1)
 ticket.imprimir_datos(resumen1)
 
 # Luis Perez
 boleto2    = BoletoEstudiante("Inception")
-comprador2 = Entidad("Luis Perez")
+comprador2 = PersonaNatural("Luis Perez")
 metodo2    = pagoEfectivo()
 resumen2   = datos.formateo_datos(boleto2, 3, comprador2, metodo2)
 ticket.imprimir_datos(resumen2)
