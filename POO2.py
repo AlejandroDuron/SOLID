@@ -3,8 +3,7 @@ from abc import ABC, abstractmethod
 # Boleto 
 
 class Boleto(ABC):
-    def __init__(self, pelicula):
-        self.pelicula = pelicula
+    precioBase = 5.00
 
     @abstractmethod
     def calcular_precio(self):
@@ -15,8 +14,6 @@ class Boleto(ABC):
         pass
     
 class BoletoGeneral(Boleto):
-    precioBase = 5.00
-
     def calcular_precio(self):
         return self.precioBase
     
@@ -26,7 +23,7 @@ class BoletoGeneral(Boleto):
 
 class BoletoVIP(Boleto):
     def calcular_precio(self):
-        return BoletoGeneral.precioBase * 2  
+        return self.precioBase * 2
     
     def tipo(self):
         return "VIP"
@@ -36,7 +33,7 @@ class BoletoEstudiante(Boleto):
     Descuento = 0.20
 
     def calcular_precio(self):
-        return BoletoGeneral.precioBase * (1 - self.Descuento)  
+        return self.precioBase * (1 - self.Descuento)  
     
     def tipo(self):
         return "Estudiante"
@@ -47,17 +44,11 @@ class BoletoEstudiante(Boleto):
 class Entidad(ABC):
     def __init__(self, nombre):
         self.nombre = nombre
-    
-    @abstractmethod
-    def tipo(self):
-        pass
 
 class PersonaNatural(Entidad):
     def __init__(self, nombre):
         super().__init__(nombre)
-        
-    def tipo(self):
-        return "Persona Natural"
+
 
 #--------------------------------------------------
 # Notidiaciones
@@ -121,7 +112,6 @@ class Datos(Formateable):
         pago_info = metodo_pago.pagar(precio, comprador.nombre)
         
         return {
-            "pelicula": boleto.pelicula,
             "tipo": boleto.tipo(),
             "cantidad": cantidad,
             "nombre": comprador.nombre,
@@ -161,14 +151,14 @@ email       = notificacionEmail()
 ticket      = TicketCheckout(db, email)
 
 # Ana Garcia
-boleto1    = BoletoVIP("Inception")
+boleto1    = BoletoVIP()
 comprador1 = PersonaNatural("Ana Garcia")
 metodo1    = pagoTarjeta()
 resumen1   = datos.formateo_datos(boleto1, 2, comprador1, metodo1)
 ticket.imprimir_datos(resumen1)
 
 # Luis Perez
-boleto2    = BoletoEstudiante("Inception")
+boleto2    = BoletoEstudiante()
 comprador2 = PersonaNatural("Luis Perez")
 metodo2    = pagoEfectivo()
 resumen2   = datos.formateo_datos(boleto2, 3, comprador2, metodo2)
